@@ -18,12 +18,15 @@ typedef struct persona{
 } PERSONA;
 
 typedef  struct lista {
-    PERSONA usuario;
+    char *nombre[2];
+    char **amigos1;
+    char **amigos2;
+    char **comunes;
     struct lista *sig;
     struct lista *ant;
 } LISTA;
 
 
 void insertar(LISTA **ultimo, PERSONA p);
-LISTA **buscar(LISTA **ultimo, char *nombre);
+LISTA **buscar(LISTA **ultimo, char *nombre1, char *nombre2);
 int eliminar(LISTA **list, int *nombre);

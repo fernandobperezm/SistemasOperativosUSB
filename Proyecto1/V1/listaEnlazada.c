@@ -39,7 +39,7 @@ enum NivelDeComplejidad {basico, intermedio, avanzado};
  * 								 correcta a la pregunta.
  */
 typedef struct persona{
-    char nombre[];
+    char *nombre;
     char **amigos;
 } PERSONA;
 

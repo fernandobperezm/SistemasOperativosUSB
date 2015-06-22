@@ -32,21 +32,18 @@ typedef struct nodo{
 
 //void mapHilos(char *linea){
 void *mapHilos(void* linea){
-    char* lineaIntro = (char*) linea; 
+	printf("%s",(char*)linea);
+	//size_t largo = strlen((char *)linea);
+	//printf("%d %s",largo,line);
+	/*
+    char lineaIntro[ = ((char*) linea); 
     //////////////////////////////////////////////////////////////
     char *persona;
     char *amigos[sizeof(lineaIntro)-2];
     char *temp;
-    printf("Llegue");
+    printf("Después del thread: %s",lineaIntro);*/
+    pthread_exit(0);
 }
-
-
-
-
-
-
-
-
 
 
 int main(int argc, char *argv[]){
@@ -57,12 +54,14 @@ int main(int argc, char *argv[]){
 	int status;
 	
 	char *line = NULL;
+	char *argumento = NULL;
     size_t len = 0;
     ssize_t read;
 	
 	FILE *filepointer;
     PERSONA P;
     
+    //pthread_mutex_t my_lock = PTHREAD_MUTEX_INITIALIZER;
         
     filepointer = fopen(nombreArchivo,"r");
 
@@ -81,8 +80,16 @@ int main(int argc, char *argv[]){
     	//printf("%s\n",line);
     	if(contador == nroHilos)
     		contador = 0;
+    	printf("Antes del thread: %s \n",line);
     	status = pthread_create(&threads[contador],NULL,mapHilos,(void *) line);
+    	if(status)
+    		printf("No se pudo crear el hilo");
     	contador++;
+    }
+    
+    int i;
+    for(i = 0; i < nroHilos; i++){
+    	pthread_join(threads[i],NULL);
     }
 	
 	free(line);

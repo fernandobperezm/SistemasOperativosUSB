@@ -1,0 +1,43 @@
+Descripción de los ejemplos.
+
+Shellscript usado. Para crear todas las carpetas.
+for i in `seq 1 10`;
+	do mkdir $i;
+	cd $i;
+	for j in `seq 1 20`;
+		do echo "Carpeta $i, archivo $j" >> $j;
+		done;
+	cd ..;
+	done; 
+	
+Carpeta 1.
+	La carpeta existe, los 20 archivos existen y están escritos.
+
+Carpeta 2.
+	La carpeta no existe.
+
+Carpeta 3.
+	La carpeta existe, sólo hay archivos pares.
+
+Carpeta 4.
+	La carpeta existe, todos los archivos están vacíos.
+
+Carpeta 5.
+	La carpeta existe, solo están los archivos 1, 18, 20. Estos son de 128kb de
+	texto.
+	
+Carpeta 6.
+	La carpeta existe, hay 6 archivos no regulares (carpetas)(1, 4, 7, 10, 15, 20). Los demás son archivos.
+
+Carpeta 7.
+	La carpeta existe, sólo hay archivos no regulares (carpetas).
+
+Carpeta 8.
+	La carpeta existe, solo hay archivos de tipo FIFO.
+
+Carpeta 9.
+	La carpeta existe, hay 5 archivos vacíos, 5 carpetas y 10 tipo FIFO.
+	
+Carpeta 10.
+	La carpeta existe, no hay ningún archivo.
+

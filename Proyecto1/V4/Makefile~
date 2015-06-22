@@ -1,0 +1,8 @@
+default: main.o listaEnlazada.o
+	gcc -Wall -o preguntas main.o listaEnlazada.o
+main.o: enteros.c listaEnlazada.h
+	gcc -c enteros.c
+listaEnlazada.o: listaEnlazada.c listaEnlazada.h
+	gcc -c listaEnlazada.c -o listaEnlazada.o
+clean:
+	rm -f *.o

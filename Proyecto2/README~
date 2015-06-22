@@ -1,0 +1,44 @@
+MiCuento					Manual de Usuario
+
+NOMBRE
+	MiCuento - Crea un cuento aleatorio a partir del contenido de archivos.
+	
+SINOPSIS
+	MiCuento [-d rutaCarpetas] númeroCarpetas númeroArchivos archivoSalida
+
+DESCRIPCIÓN
+	MiCuento muestra en pantalla y guarda en archivoSalida un cuento aleatorio.
+	Éste es generado con el contenido de archivos que estén en la ruta 
+	especificada por rutaCarpetas; si esta opción está presente, si no, el 
+	sistema busca las carpetas en el directorio local.
+	
+	El sistema de directorios debe cumplir con las siguientes condiciones:
+		- Deben haber a lo sumo 10 carpetas en el primer nivel, numeradas del 1
+		  al 10. 
+		- En cada una de las carpetas puede haber hasta 20 archivos. Numerados
+		  del 1 al 20.
+		- Se permiten archivos vacíos y archivos que no sean regulares dentro de
+		  las carpetas.
+	
+	Para generar u	
+	
+COMPILACIÓN
+	Primeramente, debe descomprimir el archivo en una carpeta en su directorio
+	local.
+	Luego, debe abrir una pantalla de terminal y dirigirse por el comando cd al
+	directorio donde descomprimió el programa.
+	Ejecute el comando make
+	Luego, el programa ya está compilado y listo para ser ejecutado.
+
+NOTAS
+	Si la cantidad de texto que se va a transmitir sobrepasa el buffer que traen 
+	los pipes no nominales,	la función write(2) no se asegura atómica y 
+	comportamientos no deseados pueden surgir.
+	
+AUTOR
+	Programa creado por Leslie Rodrigues, carné: 10-10613 y Fernando Pérez, 
+	carné 12-11152.
+	
+VER TAMBIÉN
+	pipe(1), pipe(7)
+	

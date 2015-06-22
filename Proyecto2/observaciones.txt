@@ -1,0 +1,15 @@
+El programa termina con error y da un mensaje cuando:
+- <n> o <m> no son números
+- cuando <n> es menor que 0 o mayor que 10
+- cuando <n> es menor que 0 o mayor que 10
+- cuando <directorio> no es un archivo de tipo directorio
+- cuando <directorio> no es un archivo existente
+
+El programa termina con exito y da un mensaje:
+- cuando <n> o <m> son 0 
+- cuando no hay directorios
+
+
+
+Funciona cuando hay menos carpetas que hijos;
+también funciona cuando m es mayor al numero de archivos de la carpeta seleccionada.

@@ -13,6 +13,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <errno.h>
 
 /*
@@ -39,7 +40,7 @@ enum NivelDeComplejidad {basico, intermedio, avanzado};
  * 								 correcta a la pregunta.
  */
 typedef struct persona{
-    char nombre[];
+    char *nombre;
     char **amigos;
 } PERSONA;
 
@@ -52,7 +53,10 @@ typedef struct persona{
  * 			  ant, apuntador al elemento anterior de la lista.
  */
 typedef  struct lista {
-    PERSONA usuario;
+    char *nombre[2];
+    char **amigos1;
+    char **amigos2;
+    char **comunes;
     struct lista *sig;
     struct lista *ant;
 } LISTA;
@@ -66,15 +70,19 @@ typedef  struct lista {
  * 			   pregunta, es el tipo PREGUNTA que se va a añadir.
  * Retorna: nada, las modificaciones las hace a la lista enlazada en memoria.
  */
-void insertar(LISTA **ultimo, PERSONA p){
+void insertar(LISTA **ultimo,char *nombre1,char *nombre2,char **amigos){
     LISTA *nuevo;
     nuevo = (LISTA *) malloc(sizeof(LISTA));
 
     if (*ultimo != NULL)
         (*ultimo)->sig = nuevo;
 
-    nuevo->usuario = p;
-    nuevo->sig = NULL;
+    nuevo->nombre[0] = strdup(nombre1);
+    printf("%s",nuevo->nombre[0]);
+    nuevo->nombre[1] = strdup(nombre2);
+    //nuevo->amigos1 = malloc(sizeof(amigos));
+    nuevo->amigos1 = amigos;
+    
     nuevo->ant = *ultimo;
     *ultimo = nuevo;
 }
@@ -87,12 +95,12 @@ void insertar(LISTA **ultimo, PERSONA p){
  * Retorna: un apuntador al elemento de la lista que contiene a la pregunta con 
  * el código buscado, si existe. En caso contrario, devuelve NULL.
  */
-LISTA **buscar(LISTA **ultimo, char *nombre){
+LISTA **buscar(LISTA **ultimo, char *nombre1, char *nombre2){
     LISTA **list;
     list = ultimo;
 
     while(*list != NULL){
-        if (((*list)->usuario.nombre) == nombre){
+        if (((*list)->nombre[0]) == nombre1 && (((*list)->nombre[1]) == nombre2)){
             return list;
         }
         list = &(*list)->ant;
@@ -108,10 +116,10 @@ LISTA **buscar(LISTA **ultimo, char *nombre){
  *             codigo, es un entero que representa el código de la pregunta a eliminar.		   
  * Retorna: 1 si elimina la pregunta exitosamente, 0 en caso contrario.
  */
-int eliminar(LISTA **list, char *nombre){
+int eliminar(LISTA **list, char *nombre1, char *nombre2){
 
     LISTA **temp;
-    temp = buscar(list,nombre);
+    temp = buscar(list,nombre1,nombre2);
     
     
 	if (temp != NULL){
@@ -144,5 +152,16 @@ int eliminar(LISTA **list, char *nombre){
     else
 		return 0;
     
+    
+}
+
+int main(){
+puts("hola")
+    LISTA **l;
+    l = malloc(sizeof(LISTA **));
+    *l = NULL;
+    
+    
+
     
 }
