@@ -1,0 +1,96 @@
+MICUENTO				Manual de Usuario
+
+NOMBRE
+	MiCuento - Crea un cuento aleatorio a partir del contenido de archivos.
+	
+SINOPSIS
+	MiCuento [-d rutaCarpetas] númeroCarpetas númeroArchivos archivoSalida
+
+DESCRIPCIÓN
+	MiCuento muestra en pantalla y guarda en archivoSalida un cuento aleatorio.
+	Éste es generado con el contenido de archivos que estén en un sistema de
+	directorios que deben cumplir con las siguientes condiciones:
+	
+		- Deben haber a lo sumo 10 carpetas en el primer nivel, numeradas del 1
+		  al 10. 
+		- En cada una de las carpetas puede haber hasta 20 archivos. Numerados
+		  del 1 al 20.
+		- Se permiten archivos vacíos y archivos que no sean regulares dentro de
+		  las carpetas.
+		  
+	Las opciones son las siguientes:
+	
+	-d rutaCarpetas 
+			Si esta opción está presente, el sistema de carpetas se busca en la
+			dirección especificada por rutaCarpetas. En caso contrario, se busca
+			en el directorio local.
+	
+	Los demás argumentos hacen lo siguiente:
+			
+	El número de carpetas a acceder está dado por númeroCarpetas, estas se 
+	acceden de manera aleatoria y solo una vez, también, determina cuántos hijos 
+	el proceso crea y a cada uno se le asigna una carpeta.
+	
+	El número de archivos que se acceden por carpeta está dado por númeroArchivos.
+	Se generará en cada hijo esa cantidad de números aleatorios. Si se puede 
+	acceder a esos archivos su contenido se le enviará al padre a través de un
+	pipe no nominal.
+	
+	El archivo de salida del programa está determinado por archivoSalida y si el 
+	nombre contiene una ruta, entonces el archivo será creado en esa ruta. Si no, 
+	el archivo es creado en el directorio local.
+
+IMPLEMENTACIÓN
+	El programa fue implementado usando fork(2) para crear los hijos y para la
+	comunicación entre los distintos procesos se utilizan pipe(1)s no nominales.
+	
+	Para la verificación de carpetas y archivos, se utiliza la estructura de stat
+	provista por la familia de funciones de stat(2), luego, se utilizan algunas
+	de las MACROS definidas por POSIX tales como: S_ISREG ó S_ISDIR para archivos
+	regulares y directorios respectivamente. 
+	
+	Para el manejo de la tabla de descriptores de archivos se utilizan las 
+	funciones dup2(1) y close(1).
+	
+COMPILACIÓN
+	Primeramente, debe descomprimir el archivo en una carpeta en su directorio
+	local.
+	
+	Luego, debe abrir una pantalla de terminal y dirigirse por el comando cd al
+	directorio donde descomprimió el programa.
+	
+	Ejecute el comando make(1).
+	
+	Luego, el programa ya está compilado y listo para ser ejecutado.
+
+EJEMPLO
+	Los siguientes son dos ejemplos para ejecutar el programa. 
+		1. Se ejecuta el programa con 5 carpetas y 5 archivos. El sistema de
+		carpetas se encuentra en ~/Escritorio/pruebas y la salida se redirige a 
+		~/Escritorio, el nombre del archivo será ejemplo. 
+		
+			MiCuento -d ~/Escritorio/pruebas/ 5 5 ~/Escritorio/ejemplo
+			
+		2. Se ejecuta el programa con 10 carpetas y 20 archivos. El sistema de
+		carpetas se encuentra en el directorio local de ejecución. El archivo
+		de salida también se crea en el directorio local con el nombre de ejemplo.
+			
+			MiCuento 10 20 ejemplo
+		
+VALOR DE RETORNO
+	Si MiCuento termina con éxito, devuelve 0. En otro caso, devuelve algún
+	mensaje de error o termina con algún entero mayor que 0.
+				
+NOTAS
+	Si la cantidad de texto que se va a transmitir sobrepasa el buffer que traen 
+	los pipes no nominales,	la función write(2) no se asegura atómica. 
+	La función stat utilizada, no verifica si un enlace simbólico es de tipo
+	regular, sino que, verifica al archivo al que él apunta.
+	
+AUTOR
+	Programa creado por Leslie Rodrigues, carné: 10-10613 y Fernando Pérez, 
+	carné 12-11152.
+	
+VER TAMBIÉN
+	pipe(1), pipe(7), fork(2), stat(2), dup2(1), close(1)
+	
