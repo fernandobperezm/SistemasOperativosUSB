@@ -7,7 +7,7 @@
  * 	Br. Fernando Pérez, carné: 12-11152.
  * 	Br. Leslie Rodrigues, carné: 10-10613.
  *
- * Última modificación:
+ * Última modificación: 22-06-2015.
  */
 
 //Inclumimos las librerías que necesitaremos.
@@ -20,27 +20,7 @@
 #include <unistd.h>
 #include <dirent.h> 
 #include <fcntl.h>
-#include "sistemaDeArchivos.h"
-
-/*
- * verificarConjunto es una función que determina, dado un arreglo, y un número
- * aleatorio, si el mismo está en el arreglo. 
- *
- * Argumentos: numero, entero a verificar si está en el conjunto.
- *			   arreglo, arreglo de enteros donde buscar.
- * 			   tamano, entero que especifica el tamaño del arreglo.
- *
- * Retorna: 0 si no está en el conjunto, 1 si está en el conjunto.
- */
-int verificarConjunto(int numero, int arreglo[], int tamano){
-	int i;
-	for(i = 0; i< tamano; i++){
-		if(numero == arreglo[i])
-			return 1;
-	}
-	return 0;
-}
-
+#include "funcionesAuxiliares.h"
 
 /*
  * main es el ciclo principal del programa.
@@ -49,7 +29,6 @@ int verificarConjunto(int numero, int arreglo[], int tamano){
  * 			   argv, contiene los distintos argumentos pasados por entrada estándar.
  * Retorna: 0 si termina con éxito, otro entero en cualquier otro caso.
  */
-
 int main(int argc, char *argv[]){
     int n;  //valor que el padre debe considerar y número de procesos a crear.        
     int m;  //archivos que los procesos hijos deben considerar 
@@ -58,6 +37,7 @@ int main(int argc, char *argv[]){
     char *rutaDir; //almacena el path
     
     pid_t childpid;
+    pid_t *pidHijos;
     int status = 0;   //estado del hijo
     
     int nroFilesT = 0; //número de archivos que el hijo transfirió al padre
@@ -66,8 +46,6 @@ int main(int argc, char *argv[]){
     int *aleatoriosPadre = NULL;//almecena los n numeros aletorios generados por el padre 
     int *aleatoriosHijo = NULL;//almecena los m numeros aletorios generados por el padre    
                   
-    char *temp = NULL;  //Variable temporal
-    char *temp2 = NULL; //Variable temporal
     char *nombre = NULL;  
     int i,j; //contadores
     int filedescriptor;
@@ -84,108 +62,14 @@ int main(int argc, char *argv[]){
     struct stat statbuf;
  	
  	int longitud;
- 
  	int *directorios;//Almacena los números asociados a los directorios
  					 //a los que ya se se entró o intento entrar
  	int *archivos;   //Almacena los números asociados a los directorios
  					 //a los que ya se se entró o intento entrar
     int nroIntentos = 0; //número de archivos o directorios a los que se intento acceder
-    
-    if(argc == 4){
-    
-        //convertimos segundo y tercer argumentos a enteros
-        n = strtol(argv[1],&temp,10); 
-        m = strtol(argv[2],&temp2,10);
-        
-        //verificamos que el segundo y tercer arguento sean enteros
-        if (strcmp(temp,"") || strcmp(temp2,"")){
-            printf("\nError. El formato correcto para correr el programa es:\n");
-            printf("MiCuento [-d directorio] <n> <m> <salida>\n\n");
-            printf("donde <n> y <m> son enteros no negativos.\n");
-            
-            exit(1);        
-        }
-        
-         
-        salida = strdup(argv[3]);
-        
-        directorio = ".";
-    } else if (argc == 6){
-
-        //verificamos que se introdujo un flag válido
-        if (strcmp(argv[1],"-d")){
-            printf("Error. %s NO es una opción válida.\n",argv[1]);
-            exit(1);
-        }
-        
-        directorio = (argv[2]);
-        
-        if (stat(directorio, &statbuf) != -1){
-        	if (statbuf.st_mode & S_IFDIR){	
-        	}else{
-        		
-        		printf("Error.\n%s  NO es un directorio.\n",directorio);
-        		exit(1);
-        	}
-        } else{
-        	
-        	printf("Error.\n%s  NO es un directorio.\n",directorio);
-        	exit(1);
-        }
-        
-        
-        n = strtol(argv[3],&temp,10);
-        m = strtol(argv[4],&temp2,10);
-        
-        
-         
-        salida = strdup(argv[5]);        
-    
-    } else {
-        printf("\nError. El formato correcto para correr el programa es:\n");
-        printf("MiCuento [-d directorio] <nrocarpetas> <nroarchivos> <salida>\n");
-    }
-
-
-	//verificamos que <m> y <n> sean enteros
-    if (strcmp(temp,"") || strcmp(temp2,"")){
-        printf("\nError. El formato correcto para correr el programa es:\n");
-        printf("MiCuento [-d directorio] <n> <m> <salida>\n\n");
-        printf("donde <n> y <m> son enteros no negativos.\n");
-        exit(1);        
-    }
-        
-        //verificamos que <n> sea mayor o igual a 0
-        //y menor o igual a 10
-        if ((n < 0) || (n > 10)){
-            printf("\nError. El formato correcto para correr el programa es:\n");
-            printf("MiCuento [-d directorio] <n> <m> <salida>\n\n");
-            printf("donde <n> es un enteros no negativo menor o igual a 10.\n");
-            exit(1);
-        } 
-        
-        //verificamos que <m> sea mayor o igual a 0
-        //y menor o igual a 20
-        if ((m < 0) ||(m > 20)){
-            printf("\nError. El formato correcto para correr el programa es:\n");
-            printf("MiCuento [-d directorio] <n> <m> <salida>\n\n");
-            printf("donde <n> es un enteros no negativo menor o igual a 10.\n");
-            exit(1);
-        }
-
 	
-	if (n == 0){
-		printf("El número de directorios es 0.\n");
-		printf("Finaliza el programa.\n");
-		exit(0);
-	}
-	
-	if (m == 0){
-		printf("El número de archivos a leer es 0.\n");
-		printf("Finaliza el programa.\n");
-		exit(0);
-	}
-
+	verificarArgumentos(&n, &m, &salida, &directorio,statbuf, argc, argv);   
+    
     ////////////////////////////////////////////////////////////////////////////
    
     //pedimos memoria
@@ -194,25 +78,16 @@ int main(int argc, char *argv[]){
     rutaDir = (char *)malloc(strlen(directorio) + 3);
     directorios = (int *) malloc(sizeof(int *)*10);
     archivos = (int *) malloc(sizeof(int)*20);
-    
+    pidHijos = (pid_t *) malloc(sizeof(pid_t)*n);
+ 
     //Se inicializan los números aleatorios que generará el padre
  	//y arreglo que almacena los números asociados a los directorios a los 
- 	//cuales ya intento acceder   
-    for(i = 0; i < 10; i++){
-    	if(i < n)
-    		aleatoriosPadre[i] = 0;
-    	directorios[i] = 0;
-    }
-    
-    //Se inicializan los números aleatorios que generará el hijo padre
-    //y arreglo que almacena los números asociados a los archivos a los 
- 	//cuales ya intento accede	
-    for(i = 0; i < 20; i++){
-    	if(i < m)
-    		aleatoriosHijo[i] = 0;
-    	archivos[i] = 0;
-    }
-    
+ 	//cuales ya intento acceder
+ 	inicializarArreglo(aleatoriosPadre, n);
+ 	inicializarArreglo(aleatoriosHijo, m);
+    inicializarArreglo(directorios, 10);
+ 	inicializarArreglo(archivos, 20); 
+        
     srand(getpid());
     //El padre genera n numeros aleatorios (mayores que 0 y menores o iguales a 10)
     // y los almacena en un arreglo que actúa como conjunto. y |conjunto| = n.
@@ -255,14 +130,14 @@ int main(int argc, char *argv[]){
     }
     
     
-    
+    //En caso de que no haya carpetas para ingresar.
     if(nroDirs == 0){
     	puts("No se encontró ningún directorio.");
     	puts("Se finalizará el programa.");
-    	exit(0);
+    	exit(1);
     } 
     
-    //se reinicializa el nro de intentos en 0
+    //se reinicializa el número de intentos en 0
     nroIntentos = 0;
     
     //Creamos el pipe.
@@ -271,11 +146,6 @@ int main(int argc, char *argv[]){
         exit(EXIT_FAILURE);
     }
     
-    for(i = 0; i < n; i++){
-    	printf("%d\n",aleatoriosPadre[i]);
-    }
-    
-    i = 0;
     //creación de los hijos
     for(i = 0; i< n; i++){
        if ((childpid = fork()) < 0) {
@@ -285,7 +155,6 @@ int main(int argc, char *argv[]){
        
         // Código que ejecutarán los hijos
         if (childpid == 0) { 
-            
             if (aleatoriosPadre[i] == 0){
         			exit(nroFilesT);
         	}
@@ -337,26 +206,34 @@ int main(int argc, char *argv[]){
             //liberamos memoria   
             free(nombre);
             exit(nroFilesT);   
-        }	
+        }
+        //Código que ejecutará el padre.
+        else
+        	pidHijos[i] = childpid;	
     }
 
-    
+    //Cambiamos la entrada estándar por el pipe en el modo de lectura.
 	dup2(pipefd[0], STDIN_FILENO);
     close(pipefd[1]);
     close(pipefd[0]);
 	
 	//Se abre el archivo de salida
 	salidafd = open(salida,O_WRONLY|O_CREAT,0600);	
+	printf("El cuento aleatorio es: \n");
 	
 	//se lee del pipe
 	while(read(0,&buffer,1) > 0){
-		write(salidafd,&buffer,1);
+		write(STDOUT_FILENO, &buffer, 1); //Se escribe en pantalla.
+		write(salidafd,&buffer,1); //Se escribe en el archivo.
 	}
 	close(salidafd);//se ciera el archivo de salida
 	
 	//el padre espera por sus hijos
+	printf("\n\n\nLa información de los procesos es la siguiente: \n");
 	for (i = 0; i < n; i++){
-        wait(&status);
+        waitpid(pidHijos[i],&status,0);
+        nroFilesT = status / 256;
+       	printf("El hijo %d procesó %d archivos.\n",pidHijos[i], nroFilesT);
 	}
 
 	//liberamos memoria
@@ -366,6 +243,7 @@ int main(int argc, char *argv[]){
     free(rutaDir);
     free(directorios);
     free(salida);
+    free(pidHijos);
 
     exit(0);
 }
