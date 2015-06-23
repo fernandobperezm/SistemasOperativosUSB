@@ -1,0 +1,71 @@
+1- Ejecute la siguiente secuencia de comandos y diga qué hacen.
+
+	Se usa el manual para ver qué hace cada comando.
+	1. more /etc/passwd | tail -3 | head -8 > lineas
+		
+		Respuesta: more permite usar el archivo /etc/passwd como parámetro para
+			       que puedan realizarse operaciones sobre él. tail toma y envía
+			       las últimas n líneas del archivo, en este caso, 3. Head hace
+			       lo contrario, lee las primeras 8 (en este caso) líneas de un
+			       archivo, sin embargo, lo que recibe son 3 líneas nada más, y 
+			       las escribe en un archivo llamado líneas.
+			       
+	2. cat /etc/passwd | grep -i ``^a'' | more  		      
+	
+	3. who | wc -lc 
+		Respuesta: El resultado de who (muestra quién está conectado en la 
+		máquina actualmente) se le aplica un conteo de newline y byte y se 
+		imprime en pantalla estos valores.
+	
+	4. ls -l | grep ^d | wc -l
+		Respuesta: ls -l lista en formato largo (más información que sólo el nombre)
+				   los archivos del directorio local. Se busca en ese resultado
+				   las líneas que comienzan con d. Luego, se muestra cuantas lineas
+				   tienen este patron.
+				   
+	5. find / -name ``a*'' -type d  2>> errorfind   
+		Respuesta: Busca desde el directorio / carpetas que comiencen con a y 
+		las imprime en pantalla y las carpetas a las que no pudo accesar las 
+		guardará en errorfind.
+		
+		
+2- Cree los siguientes scripts y diga qué hacen.
+	1. borrar: (borrar.bash
+	   #!/bin/bash
+	   find . -name *~ | xargs rm 
+	   #fin del script
+
+	2. encontrar:
+	   #!/bin/bash
+	   find . -name $1 -print 
+	   #fin del script
+	   
+	   RESPUESTA: Busca en el directorio local y sus subdirectorios el archivo 
+	   especificado en $1 como argumento e imprime su path relativo.
+	   
+	3. mis_variables
+	 mis_variables:
+	   #!/bin/bash 
+	   JDK=/usr/local/java/j2sdk1.4.2_03
+	   # Instalacion local de java
+	   JAVA1_4=/usr/local/java/j2sdk1.4.2_03
+	   #Definicion del classpath
+	   CLASSPATH=$JAVA1_4/src.zip:$JAVA1_4/jre/lib/rt.jar:.:$CLASSPATH
+	   #Incorporacion del . al PATH
+	   PATH=$PATH:.
+	   export JDK JAVA1_4 PATH CLASSPATH
+	   #fin del script
+	Localice en su máquina cuál es el directorio de Java (find), sustituya lo que sea necesario en el script e incorpórelo en el shell script.
+
+	Luego de ejecutar este script, ejecute set.
+
+	4. du_extendido :
+	   #!/bin/bash
+	   # USO: du_extendido
+	   for i in *;do du -sk $i;done
+	   #fin del script
+	   
+	   RESPUESTA: Para todos los archivos sumariza cuánto espacio en disco están
+	   ocupando, para los directorios, muestra el total (cuanto ocupa el 
+	   directorio y contenido).
+

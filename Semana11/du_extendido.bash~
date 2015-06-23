@@ -1,0 +1,4 @@
+#!/bin/bash
+# USO: du_extendido
+for i in *;do du -sk $i;done
+#fin del script
